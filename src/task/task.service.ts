@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Task, TaskDocument } from './model/task.schema';
 
 @Injectable()
@@ -20,5 +20,12 @@ export class TaskService {
       createdAt: new Date(),
     });
     return newTask.save();
+  }
+
+  async findOne(id: string): Promise<Task> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+    return this.taskModel.findById(id).exec();
   }
 }
