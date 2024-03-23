@@ -19,7 +19,11 @@ export class UserController {
   @UsePipes(ValidationPipe)
   async create(@Body() createUserDto: CreateUserDto): Promise<any> {
     try {
-      await this.userService.create(createUserDto);
+      await this.userService.create(
+        createUserDto.name,
+        createUserDto.email,
+        createUserDto.password,
+      );
       return {
         message: 'User [' + createUserDto.email + '] created successfully',
       };
