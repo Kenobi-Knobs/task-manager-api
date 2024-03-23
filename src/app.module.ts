@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 const config = JSON.parse(fs.readFileSync('appconfig.json', 'utf8').toString());
 
@@ -15,6 +16,7 @@ const config = JSON.parse(fs.readFileSync('appconfig.json', 'utf8').toString());
       }),
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

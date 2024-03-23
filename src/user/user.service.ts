@@ -13,4 +13,8 @@ export class UserService {
     const newUser = new this.userModel({ ...user, password: hashedPassword });
     return newUser.save();
   }
+
+  async findOne(email: string): Promise<User | undefined> {
+    return this.userModel.findOne({ email }).exec();
+  }
 }
