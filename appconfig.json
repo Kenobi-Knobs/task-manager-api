@@ -1,3 +1,5 @@
 {
-	"mongoUri": ""
+	"mongoUri": "mongoAtlasUri",
+	"jwtSecret": "secret-key",
+	"jwtExpire": "1d"
 }
