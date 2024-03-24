@@ -46,4 +46,15 @@ export class TaskService {
     }
     return this.taskModel.findByIdAndDelete(id);
   }
+
+  async promote(id: string, status: string): Promise<Task> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+    return this.taskModel.findByIdAndUpdate(
+      id,
+      { status: status },
+      { new: true },
+    );
+  }
 }

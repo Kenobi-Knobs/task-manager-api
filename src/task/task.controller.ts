@@ -16,6 +16,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { PromoteTaskDto } from './dto/promote-task.dto';
 import { Task } from './model/task.schema';
 
 @Controller('task')
@@ -98,6 +99,32 @@ export class TaskController {
       }
       return {
         message: 'Task [' + task.name + '] deleted successfully',
+        task: task,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @Patch(':id/promote')
+  @UsePipes(ValidationPipe)
+  async promote(
+    @Request() req,
+    @Body() promoteTaskDto: PromoteTaskDto,
+  ): Promise<{ message: string; task: Task }> {
+    try {
+      const task = await this.taskService.promote(
+        req.params.id,
+        promoteTaskDto.status,
+      );
+      if (!task) {
+        throw new NotFoundException();
+      }
+      return {
+        message:
+          'Task [' + task.name + '] promoted to ' + promoteTaskDto.status,
         task: task,
       };
     } catch (error) {
