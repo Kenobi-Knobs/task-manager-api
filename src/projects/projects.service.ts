@@ -20,4 +20,24 @@ export class ProjectsService {
     });
     return newProject.save();
   }
+
+  async findById(id: string): Promise<Project> {
+    return this.projectModel.findById(id);
+  }
+
+  async update(
+    id: string,
+    name: string,
+    description: string,
+  ): Promise<Project> {
+    return this.projectModel.findByIdAndUpdate(
+      id,
+      { name: name, description: description },
+      { new: true },
+    );
+  }
+
+  async delete(id: string): Promise<Project> {
+    return this.projectModel.findByIdAndDelete(id);
+  }
 }
