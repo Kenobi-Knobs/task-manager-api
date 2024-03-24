@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TaskModule } from './tasks/tasks.module';
+import { ProjectsModule } from './projects/projects.module';
 
 const config = JSON.parse(fs.readFileSync('appconfig.json', 'utf8').toString());
 
@@ -19,6 +20,7 @@ const config = JSON.parse(fs.readFileSync('appconfig.json', 'utf8').toString());
     UserModule,
     AuthModule,
     TaskModule,
+    ProjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
