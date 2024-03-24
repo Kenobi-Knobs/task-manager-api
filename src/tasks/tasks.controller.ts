@@ -13,13 +13,13 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { TaskService } from './task.service';
+import { TaskService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PromoteTaskDto } from './dto/promote-task.dto';
 import { Task } from './model/task.schema';
 
-@Controller('task')
+@Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
