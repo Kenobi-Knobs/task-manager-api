@@ -131,4 +131,30 @@ export class TaskController {
       throw error;
     }
   }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @Patch(':id/add-to-project/:projectId')
+  async addToProject(@Request() req): Promise<{ message: string; task: Task }> {
+    try {
+      const task = await this.taskService.addToProject(
+        req.params.id,
+        req.params.projectId,
+      );
+      if (!task) {
+        throw new NotFoundException();
+      }
+      return {
+        message:
+          'Task [' +
+          req.params.id +
+          '] added to project [' +
+          req.params.projectId +
+          ']',
+        task: task,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

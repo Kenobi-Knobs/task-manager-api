@@ -17,10 +17,14 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './model/project.schema';
 import { AuthGuard } from '../auth/auth.guard';
+import { TaskService } from 'src/tasks/tasks.service';
 
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly taskService: TaskService,
+  ) {}
 
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
@@ -90,8 +94,13 @@ export class ProjectsController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Delete(':id')
-  async delete(@Request() req): Promise<{ message: string; project: Project }> {
+  async delete(
+    @Request() req,
+  ): Promise<{ message: string; project: Project; taskUpdated: number }> {
     try {
+      const tasksUpdated = await this.taskService.removeProjectFromAllTask(
+        req.params.id,
+      );
       const deletedProject = await this.projectsService.delete(req.params.id);
       if (!deletedProject) {
         throw new NotFoundException();
@@ -99,6 +108,7 @@ export class ProjectsController {
       return {
         message: 'Project [' + deletedProject.name + '] deleted successfully',
         project: deletedProject,
+        taskUpdated: tasksUpdated,
       };
     } catch (error) {
       throw error;

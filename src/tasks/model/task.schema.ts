@@ -22,6 +22,9 @@ export class Task {
 
   @Prop()
   createdAt: Date;
+
+  @Prop()
+  projectId: mongoose.Types.ObjectId;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

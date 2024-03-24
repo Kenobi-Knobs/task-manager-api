@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { Project } from './model/project.schema';
+import { Project, ProjectDocument } from './model/project.schema';
 
 @Injectable()
 export class ProjectsService {
-  constructor(@InjectModel('Project') private projectModel: Model<any>) {}
+  constructor(
+    @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
+  ) {}
 
   async create(
     name: string,

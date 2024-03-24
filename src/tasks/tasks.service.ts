@@ -18,6 +18,7 @@ export class TaskService {
       author: author,
       status: 'New',
       createdAt: new Date(),
+      projectId: null,
     });
     return newTask.save();
   }
@@ -56,5 +57,33 @@ export class TaskService {
       { status: status },
       { new: true },
     );
+  }
+
+  async addToProject(id: string, projectId: string): Promise<Task> {
+    if (
+      !mongoose.Types.ObjectId.isValid(id) ||
+      !mongoose.Types.ObjectId.isValid(projectId)
+    ) {
+      return null;
+    }
+    return this.taskModel.findByIdAndUpdate(
+      id,
+      { projectId: projectId },
+      { new: true },
+    );
+  }
+
+  async removeProjectFromAllTask(projectId: string): Promise<number> {
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      return null;
+    }
+    const result = await this.taskModel.updateMany(
+      {
+        projectId: projectId,
+      },
+      { projectId: null },
+    );
+
+    return result.modifiedCount;
   }
 }
