@@ -8,11 +8,13 @@ import {
   Request,
   UseGuards,
   Get,
+  Patch,
   NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './model/task.schema';
 
 @Controller('task')
@@ -53,6 +55,32 @@ export class TaskController {
         throw new NotFoundException();
       }
       return task;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @Patch(':id')
+  @UsePipes(ValidationPipe)
+  async update(
+    @Request() req,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ): Promise<{ message: string; task: Task }> {
+    try {
+      const task = await this.taskService.update(
+        req.params.id,
+        updateTaskDto.name,
+        updateTaskDto.description,
+      );
+      if (!task) {
+        throw new NotFoundException();
+      }
+      return {
+        message: 'Task [' + updateTaskDto.name + '] updated successfully',
+        task: task,
+      };
     } catch (error) {
       throw error;
     }

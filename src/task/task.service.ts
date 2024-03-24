@@ -28,4 +28,15 @@ export class TaskService {
     }
     return this.taskModel.findById(id).exec();
   }
+
+  async update(id: string, name: string, description: string): Promise<Task> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+    return this.taskModel.findByIdAndUpdate(
+      id,
+      { name: name, description: description },
+      { new: true },
+    );
+  }
 }
