@@ -10,6 +10,7 @@ import {
   Get,
   Patch,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -22,9 +23,9 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @UseGuards(AuthGuard)
+  @UsePipes(ValidationPipe)
   @HttpCode(201)
   @Post('create')
-  @UsePipes(ValidationPipe)
   async create(
     @Body() createProjectDto: CreateProjectDto,
     @Request() req,
@@ -51,6 +52,9 @@ export class ProjectsController {
   async findById(@Request() req): Promise<Project> {
     try {
       const project = await this.projectsService.findById(req.params.id);
+      if (!project) {
+        throw new NotFoundException();
+      }
       return project;
     } catch (error) {
       throw error;
@@ -58,9 +62,9 @@ export class ProjectsController {
   }
 
   @UseGuards(AuthGuard)
+  @UsePipes(ValidationPipe)
   @HttpCode(200)
   @Patch(':id')
-  @UsePipes(ValidationPipe)
   async update(
     @Body() updateProjectDto: UpdateProjectDto,
     @Request() req,
@@ -71,6 +75,9 @@ export class ProjectsController {
         updateProjectDto.name,
         updateProjectDto.description,
       );
+      if (!updatedProject) {
+        throw new NotFoundException();
+      }
       return {
         message: 'Project [' + updateProjectDto.name + '] updated successfully',
         project: updatedProject,
@@ -86,6 +93,9 @@ export class ProjectsController {
   async delete(@Request() req): Promise<{ message: string; project: Project }> {
     try {
       const deletedProject = await this.projectsService.delete(req.params.id);
+      if (!deletedProject) {
+        throw new NotFoundException();
+      }
       return {
         message: 'Project [' + deletedProject.name + '] deleted successfully',
         project: deletedProject,

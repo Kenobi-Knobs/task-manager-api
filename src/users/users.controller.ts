@@ -14,9 +14,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('create')
-  @HttpCode(201)
   @UsePipes(ValidationPipe)
+  @HttpCode(201)
+  @Post('create')
   async create(@Body() createUserDto: CreateUserDto): Promise<any> {
     try {
       await this.userService.create(

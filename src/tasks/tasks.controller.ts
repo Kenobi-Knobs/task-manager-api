@@ -24,9 +24,9 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @UseGuards(AuthGuard)
-  @Post('create')
-  @HttpCode(201)
   @UsePipes(ValidationPipe)
+  @HttpCode(201)
+  @Post('create')
   async create(
     @Body() createTaskDto: CreateTaskDto,
     @Request() req,
@@ -63,9 +63,9 @@ export class TaskController {
   }
 
   @UseGuards(AuthGuard)
+  @UsePipes(ValidationPipe)
   @HttpCode(200)
   @Patch(':id')
-  @UsePipes(ValidationPipe)
   async update(
     @Request() req,
     @Body() updateTaskDto: UpdateTaskDto,
@@ -107,9 +107,9 @@ export class TaskController {
   }
 
   @UseGuards(AuthGuard)
+  @UsePipes(ValidationPipe)
   @HttpCode(200)
   @Patch(':id/promote')
-  @UsePipes(ValidationPipe)
   async promote(
     @Request() req,
     @Body() promoteTaskDto: PromoteTaskDto,
