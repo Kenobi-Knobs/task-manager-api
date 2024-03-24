@@ -10,6 +10,7 @@ import {
   Get,
   Patch,
   NotFoundException,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { TaskService } from './task.service';
@@ -79,6 +80,24 @@ export class TaskController {
       }
       return {
         message: 'Task [' + updateTaskDto.name + '] updated successfully',
+        task: task,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @Delete(':id')
+  async delete(@Request() req): Promise<{ message: string; task: Task }> {
+    try {
+      const task = await this.taskService.delete(req.params.id);
+      if (!task) {
+        throw new NotFoundException();
+      }
+      return {
+        message: 'Task [' + task.name + '] deleted successfully',
         task: task,
       };
     } catch (error) {

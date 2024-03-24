@@ -39,4 +39,11 @@ export class TaskService {
       { new: true },
     );
   }
+
+  async delete(id: string): Promise<Task> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+    return this.taskModel.findByIdAndDelete(id);
+  }
 }
