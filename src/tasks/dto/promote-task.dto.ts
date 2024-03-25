@@ -1,10 +1,5 @@
 ﻿import { IsEnum } from 'class-validator';
-
-export enum TaskStatus {
-  New = 'New',
-  InProgress = 'In Progress',
-  Done = 'Done',
-}
+import { TaskStatus } from './enums/task-status.enum';
 
 export class PromoteTaskDto {
   @IsEnum(TaskStatus)
