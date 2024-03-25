@@ -11,6 +11,7 @@ import {
   Patch,
   NotFoundException,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { TaskService } from './tasks.service';
@@ -18,6 +19,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PromoteTaskDto } from './dto/promote-task.dto';
 import { Task } from './model/task.schema';
+import { GetTasksDto } from './dto/get-tasks.dto';
 
 @Controller('tasks')
 export class TaskController {
@@ -153,6 +155,19 @@ export class TaskController {
           ']',
         task: task,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @UsePipes(ValidationPipe)
+  @HttpCode(200)
+  @Get()
+  async findAll(@Query() getTasksDto: GetTasksDto): Promise<Task[]> {
+    try {
+      const tasks = await this.taskService.findAll(getTasksDto);
+      return tasks;
     } catch (error) {
       throw error;
     }
