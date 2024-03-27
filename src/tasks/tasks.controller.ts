@@ -20,11 +20,29 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { PromoteTaskDto } from './dto/promote-task.dto';
 import { Task } from './model/task.schema';
 import { GetTasksDto } from './dto/get-tasks.dto';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { TaskResponseDto } from './dto/response-task.dto';
 
+@ApiTags('Tasks')
+@ApiBearerAuth()
+@ApiBadRequestResponse({ description: 'Bad request' })
+@ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @ApiOperation({ summary: 'Create a new task' })
+  @ApiCreatedResponse({
+    description: 'The task has been successfully created',
+    type: TaskResponseDto,
+  })
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @HttpCode(201)
@@ -32,7 +50,7 @@ export class TaskController {
   async create(
     @Body() createTaskDto: CreateTaskDto,
     @Request() req,
-  ): Promise<{ message: string; task: Task }> {
+  ): Promise<TaskResponseDto> {
     try {
       const userEmail = req.user.email;
       const newTask = await this.taskService.create(
@@ -40,10 +58,11 @@ export class TaskController {
         createTaskDto.description,
         userEmail,
       );
-      return {
-        message: 'Task [' + createTaskDto.name + '] created successfully',
-        task: newTask,
-      };
+
+      return new TaskResponseDto(
+        'Task [' + newTask.name + '] created successfully',
+        newTask,
+      );
     } catch (error) {
       throw error;
     }
