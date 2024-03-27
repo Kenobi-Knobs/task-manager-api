@@ -168,6 +168,20 @@ export class TaskController {
     }
   }
 
+  @ApiOperation({ summary: 'Promote task by Id' })
+  @ApiParam({
+    name: 'id',
+    example: '660451b642509b83c6a0f695',
+    description: 'The unique identifier of the task',
+    type: String,
+  })
+  @ApiOkResponse({
+    description:
+      'The task has been successfully promoted and return promoted task',
+    type: TaskResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @HttpCode(200)
@@ -175,7 +189,7 @@ export class TaskController {
   async promote(
     @Request() req,
     @Body() promoteTaskDto: PromoteTaskDto,
-  ): Promise<{ message: string; task: Task }> {
+  ): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.promote(
         req.params.id,
@@ -184,20 +198,38 @@ export class TaskController {
       if (!task) {
         throw new NotFoundException();
       }
-      return {
-        message:
-          'Task [' + task.name + '] promoted to ' + promoteTaskDto.status,
-        task: task,
-      };
+      return new TaskResponseDto(
+        'Task [' + task.name + '] promoted to [' + promoteTaskDto.status + ']',
+        task,
+      );
     } catch (error) {
       throw error;
     }
   }
 
+  @ApiOperation({ summary: 'Add task to project' })
+  @ApiParam({
+    name: 'id',
+    example: '660451b642509b83c6a0f695',
+    description: 'The unique identifier of the task',
+    type: String,
+  })
+  @ApiParam({
+    name: 'projectId',
+    example: '660451b642509b83c6a0f695',
+    description: 'The unique identifier of the project',
+    type: String,
+  })
+  @ApiOkResponse({
+    description:
+      'The task has been successfully added to project and return updated task',
+    type: TaskResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Patch(':id/add-to-project/:projectId')
-  async addToProject(@Request() req): Promise<{ message: string; task: Task }> {
+  async addToProject(@Request() req): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.addToProject(
         req.params.id,
@@ -206,20 +238,26 @@ export class TaskController {
       if (!task) {
         throw new NotFoundException();
       }
-      return {
-        message:
-          'Task [' +
+      return new TaskResponseDto(
+        'Task [' +
           req.params.id +
           '] added to project [' +
           req.params.projectId +
           ']',
-        task: task,
-      };
+        task,
+      );
     } catch (error) {
       throw error;
     }
   }
 
+  @ApiOperation({ summary: 'Get task list with params' })
+  @ApiOkResponse({
+    description: 'Task list returned successfully',
+    type: Task,
+    isArray: true,
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @HttpCode(200)
