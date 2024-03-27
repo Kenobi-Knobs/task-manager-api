@@ -5,7 +5,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type TaskDocument = HydratedDocument<Task>;
 
-@Schema()
+@Schema({ versionKey: false })
 export class Task {
   @ApiProperty({
     example: '660451b642509b83c6a0f695',
@@ -39,8 +39,6 @@ export class Task {
   @ApiProperty({
     example: 'author@gmail.com',
     description: 'The author of the task email address',
-    minLength: 3,
-    maxLength: 100,
     type: String,
     required: true,
   })
