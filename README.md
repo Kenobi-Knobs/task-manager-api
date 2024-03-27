@@ -5,6 +5,9 @@ The Task Manager API is a RESTful web service that allows users to manage their 
 
 This API is built using Nest.js, a progressive Node.js framework for building efficient, scalable, and maintainable server-side applications. Nest.js provides a solid foundation for developing robust and modular applications, making it an ideal choice for projects like the Task Manager API.
 
+## Documentation
+The documentation for the Task Manager API is implemented with Swagger API and can be accessed at `localhost:3000/api`.
+
 ## Installation
 
 ```bash
@@ -26,4 +29,4 @@ $ npm run start:prod
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+[MIT licensed](LICENSE).
