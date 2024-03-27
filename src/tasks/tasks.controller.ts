@@ -24,7 +24,10 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -32,7 +35,6 @@ import { TaskResponseDto } from './dto/response-task.dto';
 
 @ApiTags('Tasks')
 @ApiBearerAuth()
-@ApiBadRequestResponse({ description: 'Bad request' })
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('tasks')
 export class TaskController {
@@ -43,6 +45,7 @@ export class TaskController {
     description: 'The task has been successfully created',
     type: TaskResponseDto,
   })
+  @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @HttpCode(201)
@@ -68,6 +71,18 @@ export class TaskController {
     }
   }
 
+  @ApiOperation({ summary: 'Get task by Id' })
+  @ApiParam({
+    name: 'id',
+    example: '660451b642509b83c6a0f695',
+    description: 'The unique identifier of the task',
+    type: String,
+  })
+  @ApiOkResponse({
+    description: 'The task has been successfully found',
+    type: Task,
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get(':id')
@@ -83,6 +98,20 @@ export class TaskController {
     }
   }
 
+  @ApiOperation({ summary: 'Update task by Id' })
+  @ApiParam({
+    name: 'id',
+    example: '660451b642509b83c6a0f695',
+    description: 'The unique identifier of the task',
+    type: String,
+  })
+  @ApiOkResponse({
+    description:
+      'The task has been successfully updated and return updated task',
+    type: TaskResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
+  @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @HttpCode(200)
@@ -90,7 +119,7 @@ export class TaskController {
   async update(
     @Request() req,
     @Body() updateTaskDto: UpdateTaskDto,
-  ): Promise<{ message: string; task: Task }> {
+  ): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.update(
         req.params.id,
@@ -100,28 +129,40 @@ export class TaskController {
       if (!task) {
         throw new NotFoundException();
       }
-      return {
-        message: 'Task [' + updateTaskDto.name + '] updated successfully',
-        task: task,
-      };
+      return new TaskResponseDto(
+        'Task [' + task.name + '] updated successfully',
+        task,
+      );
     } catch (error) {
       throw error;
     }
   }
 
+  @ApiOperation({ summary: 'Delete task by Id' })
+  @ApiParam({
+    name: 'id',
+    example: '660451b642509b83c6a0f695',
+    description: 'The unique identifier of the task',
+    type: String,
+  })
+  @ApiOkResponse({
+    description: 'The task has been successfully deleted, return deleted task',
+    type: TaskResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Not found' })
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Delete(':id')
-  async delete(@Request() req): Promise<{ message: string; task: Task }> {
+  async delete(@Request() req): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.delete(req.params.id);
       if (!task) {
         throw new NotFoundException();
       }
-      return {
-        message: 'Task [' + task.name + '] deleted successfully',
-        task: task,
-      };
+      return new TaskResponseDto(
+        'Task [' + task.name + '] deleted successfully',
+        task,
+      );
     } catch (error) {
       throw error;
     }
