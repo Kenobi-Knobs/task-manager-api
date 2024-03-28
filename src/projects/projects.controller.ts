@@ -9,6 +9,7 @@ import {
   Delete,
   NotFoundException,
   Req,
+  Param,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ProjectsService } from './projects.service';
@@ -30,6 +31,7 @@ import {
 } from '@nestjs/swagger';
 import { ProjectResponseDto } from './dto/response-project.dto';
 import { ProjectDeleteResponseDto } from './dto/response-project-delete.dto';
+import { ProjectIdDto } from './dto/project-id.dto';
 
 @ApiTags('Projects')
 @ApiBearerAuth()
@@ -84,9 +86,9 @@ export class ProjectsController {
   @ApiNotFoundResponse({ description: 'Project not found' })
   @HttpCode(200)
   @Get(':id')
-  async findById(@Req() request: Request): Promise<Project> {
+  async findById(@Param() params: ProjectIdDto): Promise<Project> {
     try {
-      const project = await this.projectsService.findById(request.params.id);
+      const project = await this.projectsService.findById(params.id);
       if (!project) {
         throw new NotFoundException();
       }
@@ -114,11 +116,11 @@ export class ProjectsController {
   @Patch(':id')
   async update(
     @Body() updateProjectDto: UpdateProjectDto,
-    @Req() request: Request,
+    @Param() params: ProjectIdDto,
   ): Promise<ProjectResponseDto> {
     try {
       const updatedProject = await this.projectsService.update(
-        request.params.id,
+        params.id,
         updateProjectDto.name,
         updateProjectDto.description,
       );
@@ -149,14 +151,14 @@ export class ProjectsController {
   @ApiNotFoundResponse({ description: 'Project not found' })
   @HttpCode(200)
   @Delete(':id')
-  async delete(@Req() request: Request): Promise<ProjectDeleteResponseDto> {
+  async delete(
+    @Param() params: ProjectIdDto,
+  ): Promise<ProjectDeleteResponseDto> {
     try {
       const tasksUpdated = await this.taskService.removeProjectFromAllTask(
-        request.params.id,
+        params.id,
       );
-      const deletedProject = await this.projectsService.delete(
-        request.params.id,
-      );
+      const deletedProject = await this.projectsService.delete(params.id);
       if (!deletedProject) {
         throw new NotFoundException();
       }
