@@ -14,6 +14,15 @@ The documentation for the Task Manager API is implemented with Swagger API and c
 $ npm install
 ```
 
+## Configuration
+To ensure proper functionality of the application, it's necessary to create a `.env` file in the root directory of the repository. Below is an example of its contents:
+```bash
+MONGO_URI="mongoUri"
+JWT_SECRET="secretWord"
+JWT_EXPIRE="1h"
+```
+Make sure to replace `mongoUri` with your actual MongoDB connection string, `secretWord` with your desired JWT secret key, and adjust the JWT expiry time (`1h`) as needed.
+
 ## Running the app
 
 ```bash
