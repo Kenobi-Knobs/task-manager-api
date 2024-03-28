@@ -3,8 +3,6 @@ import {
   Post,
   Body,
   HttpCode,
-  UsePipes,
-  ValidationPipe,
   ConflictException,
 } from '@nestjs/common';
 import { UserService } from './users.service';
@@ -30,7 +28,6 @@ export class UserController {
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiConflictResponse({ description: 'Email already exists' })
-  @UsePipes(ValidationPipe)
   @HttpCode(201)
   @Post('')
   async create(

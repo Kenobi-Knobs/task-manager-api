@@ -3,8 +3,6 @@ import {
   Post,
   Body,
   HttpCode,
-  UsePipes,
-  ValidationPipe,
   UseGuards,
   Get,
   Patch,
@@ -50,7 +48,6 @@ export class ProjectsController {
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
   @HttpCode(201)
   @Post('')
   async create(
@@ -115,7 +112,6 @@ export class ProjectsController {
   @ApiNotFoundResponse({ description: 'Project not found' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
   @HttpCode(200)
   @Patch(':id')
   async update(

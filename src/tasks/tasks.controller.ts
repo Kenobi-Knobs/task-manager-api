@@ -3,8 +3,6 @@ import {
   Post,
   Body,
   HttpCode,
-  UsePipes,
-  ValidationPipe,
   Req,
   UseGuards,
   Get,
@@ -48,7 +46,6 @@ export class TaskController {
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
   @HttpCode(201)
   @Post('')
   async create(
@@ -113,7 +110,6 @@ export class TaskController {
   @ApiNotFoundResponse({ description: 'Not found' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
   @HttpCode(200)
   @Patch(':id')
   async update(
@@ -183,7 +179,6 @@ export class TaskController {
   @ApiNotFoundResponse({ description: 'Not found' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
   @HttpCode(200)
   @Patch(':id/promote')
   async promote(
@@ -259,7 +254,6 @@ export class TaskController {
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
   @HttpCode(200)
   @Get()
   async findAll(@Query() getTasksDto: GetTasksDto): Promise<Task[]> {
