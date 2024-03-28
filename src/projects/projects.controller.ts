@@ -56,8 +56,7 @@ export class ProjectsController {
     @Req() request: Request,
   ): Promise<ProjectResponseDto> {
     const newProject = await this.projectsService.create(
-      createProjectDto.name,
-      createProjectDto.description,
+      createProjectDto,
       request['user'].email,
     );
     return new ProjectResponseDto(
@@ -82,7 +81,7 @@ export class ProjectsController {
   @HttpCode(200)
   @Get(':id')
   async findById(@Param() params: ProjectIdDto): Promise<Project> {
-    const project = await this.projectsService.findById(params.id);
+    const project = await this.projectsService.findById(params);
     return project;
   }
 
@@ -107,9 +106,8 @@ export class ProjectsController {
     @Param() params: ProjectIdDto,
   ): Promise<ProjectResponseDto> {
     const updatedProject = await this.projectsService.update(
-      params.id,
-      updateProjectDto.name,
-      updateProjectDto.description,
+      params,
+      updateProjectDto,
     );
     return new ProjectResponseDto(
       'Project [' + updatedProject.name + '] updated successfully',
@@ -135,10 +133,9 @@ export class ProjectsController {
   async delete(
     @Param() params: ProjectIdDto,
   ): Promise<ProjectDeleteResponseDto> {
-    const tasksUpdated = await this.taskService.removeProjectFromAllTask(
-      params.id,
-    );
-    const deletedProject = await this.projectsService.delete(params.id);
+    const tasksUpdated =
+      await this.taskService.removeProjectFromAllTask(params);
+    const deletedProject = await this.projectsService.delete(params);
     return new ProjectDeleteResponseDto(
       'Project [' + deletedProject.name + '] deleted successfully',
       deletedProject,

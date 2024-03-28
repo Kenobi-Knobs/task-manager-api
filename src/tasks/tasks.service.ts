@@ -60,14 +60,12 @@ export class TaskService {
   }
 
   async removeProjectFromAllTask(projectId: string): Promise<number> {
-    const result = await this.taskModel
-      .updateMany(
-        {
-          projectId: projectId,
-        },
-        { projectId: null },
-      )
-      .orFail(new NotFoundException('Project not found'));
+    const result = await this.taskModel.updateMany(
+      {
+        projectId: projectId,
+      },
+      { projectId: null },
+    );
 
     return result.modifiedCount;
   }
