@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Task, TaskDocument } from './model/task.schema';
 import { GetTasksDto } from './dto/get-tasks.dto';
 import { FilterQuery } from 'mongoose';
@@ -26,16 +26,10 @@ export class TaskService {
   }
 
   async findOne(id: string): Promise<Task> {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return null;
-    }
     return this.taskModel.findById(id).exec();
   }
 
   async update(id: string, name: string, description: string): Promise<Task> {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return null;
-    }
     return this.taskModel.findByIdAndUpdate(
       id,
       { name: name, description: description },
@@ -44,16 +38,10 @@ export class TaskService {
   }
 
   async delete(id: string): Promise<Task> {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return null;
-    }
     return this.taskModel.findByIdAndDelete(id);
   }
 
   async promote(id: string, status: TaskStatus): Promise<Task> {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return null;
-    }
     return this.taskModel.findByIdAndUpdate(
       id,
       { status: status },
@@ -62,12 +50,6 @@ export class TaskService {
   }
 
   async addToProject(id: string, projectId: string): Promise<Task> {
-    if (
-      !mongoose.Types.ObjectId.isValid(id) ||
-      !mongoose.Types.ObjectId.isValid(projectId)
-    ) {
-      return null;
-    }
     return this.taskModel.findByIdAndUpdate(
       id,
       { projectId: projectId },
@@ -76,9 +58,6 @@ export class TaskService {
   }
 
   async removeProjectFromAllTask(projectId: string): Promise<number> {
-    if (!mongoose.Types.ObjectId.isValid(projectId)) {
-      return null;
-    }
     const result = await this.taskModel.updateMany(
       {
         projectId: projectId,

@@ -10,6 +10,7 @@ import {
   NotFoundException,
   Delete,
   Query,
+  Param,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -31,6 +32,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { TaskResponseDto } from './dto/response-task.dto';
+import { TaskIdDto } from './dto/task-id.dto';
+import { AddToProjectDto } from './dto/add-to-project.dto';
 
 @ApiTags('Tasks')
 @ApiBearerAuth()
@@ -82,9 +85,9 @@ export class TaskController {
   @ApiNotFoundResponse({ description: 'Not found' })
   @HttpCode(200)
   @Get(':id')
-  async findOne(@Req() request: Request): Promise<Task> {
+  async findOne(@Param() params: TaskIdDto): Promise<Task> {
     try {
-      const task = await this.taskService.findOne(request.params.id);
+      const task = await this.taskService.findOne(params.id);
       if (!task) {
         throw new NotFoundException();
       }
@@ -111,12 +114,12 @@ export class TaskController {
   @HttpCode(200)
   @Patch(':id')
   async update(
-    @Req() request: Request,
+    @Param() params: TaskIdDto,
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.update(
-        request.params.id,
+        params.id,
         updateTaskDto.name,
         updateTaskDto.description,
       );
@@ -146,9 +149,9 @@ export class TaskController {
   @ApiNotFoundResponse({ description: 'Not found' })
   @HttpCode(200)
   @Delete(':id')
-  async delete(@Req() request: Request): Promise<TaskResponseDto> {
+  async delete(@Param() params: TaskIdDto): Promise<TaskResponseDto> {
     try {
-      const task = await this.taskService.delete(request.params.id);
+      const task = await this.taskService.delete(params.id);
       if (!task) {
         throw new NotFoundException();
       }
@@ -178,12 +181,12 @@ export class TaskController {
   @HttpCode(200)
   @Patch(':id/promote')
   async promote(
-    @Req() request: Request,
+    @Param() params: TaskIdDto,
     @Body() promoteTaskDto: PromoteTaskDto,
   ): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.promote(
-        request.params.id,
+        params.id,
         promoteTaskDto.status,
       );
       if (!task) {
@@ -219,21 +222,19 @@ export class TaskController {
   @ApiNotFoundResponse({ description: 'Not found' })
   @HttpCode(200)
   @Patch(':id/add-to-project/:projectId')
-  async addToProject(@Req() request: Request): Promise<TaskResponseDto> {
+  async addToProject(
+    @Param() params: AddToProjectDto,
+  ): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.addToProject(
-        request.params.id,
-        request.params.projectId,
+        params.id,
+        params.projectId,
       );
       if (!task) {
         throw new NotFoundException();
       }
       return new TaskResponseDto(
-        'Task [' +
-          request.params.id +
-          '] added to project [' +
-          request.params.projectId +
-          ']',
+        'Task [' + params.id + '] added to project [' + params.projectId + ']',
         task,
       );
     } catch (error) {
