@@ -4,6 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { Task, TaskDocument } from './model/task.schema';
 import { GetTasksDto } from './dto/get-tasks.dto';
 import { FilterQuery } from 'mongoose';
+import { TaskStatus } from './dto/enums/task-status.enum';
 
 @Injectable()
 export class TaskService {
@@ -18,7 +19,7 @@ export class TaskService {
       name: name,
       description: description,
       author: author,
-      status: 'New',
+      status: TaskStatus.New,
       projectId: null,
     });
     return newTask.save();
@@ -49,7 +50,7 @@ export class TaskService {
     return this.taskModel.findByIdAndDelete(id);
   }
 
-  async promote(id: string, status: string): Promise<Task> {
+  async promote(id: string, status: TaskStatus): Promise<Task> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null;
     }

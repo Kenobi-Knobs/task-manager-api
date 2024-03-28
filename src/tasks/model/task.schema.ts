@@ -2,6 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { HydratedDocument } from 'mongoose';
+import { TaskStatus } from '../dto/enums/task-status.enum';
 
 export type TaskDocument = HydratedDocument<Task>;
 
@@ -54,8 +55,8 @@ export class Task {
     required: true,
     enum: ['New', 'In Progress', 'Done'],
   })
-  @Prop()
-  status: string;
+  @Prop({ default: TaskStatus.New })
+  status: TaskStatus;
 
   @ApiProperty({
     example: '660451b642509b83c6a0f695',
