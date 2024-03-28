@@ -36,6 +36,7 @@ import { TaskResponseDto } from './dto/response-task.dto';
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('tasks')
+@UseGuards(AuthGuard)
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
@@ -45,7 +46,6 @@ export class TaskController {
     type: TaskResponseDto,
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  @UseGuards(AuthGuard)
   @HttpCode(201)
   @Post('')
   async create(
@@ -80,7 +80,6 @@ export class TaskController {
     type: Task,
   })
   @ApiNotFoundResponse({ description: 'Not found' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get(':id')
   async findOne(@Req() request: Request): Promise<Task> {
@@ -109,7 +108,6 @@ export class TaskController {
   })
   @ApiNotFoundResponse({ description: 'Not found' })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Patch(':id')
   async update(
@@ -146,7 +144,6 @@ export class TaskController {
     type: TaskResponseDto,
   })
   @ApiNotFoundResponse({ description: 'Not found' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Delete(':id')
   async delete(@Req() request: Request): Promise<TaskResponseDto> {
@@ -178,7 +175,6 @@ export class TaskController {
   })
   @ApiNotFoundResponse({ description: 'Not found' })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Patch(':id/promote')
   async promote(
@@ -221,7 +217,6 @@ export class TaskController {
     type: TaskResponseDto,
   })
   @ApiNotFoundResponse({ description: 'Not found' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Patch(':id/add-to-project/:projectId')
   async addToProject(@Req() request: Request): Promise<TaskResponseDto> {
@@ -253,7 +248,6 @@ export class TaskController {
     isArray: true,
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get()
   async findAll(@Query() getTasksDto: GetTasksDto): Promise<Task[]> {

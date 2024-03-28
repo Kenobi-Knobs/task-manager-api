@@ -35,6 +35,7 @@ import { ProjectDeleteResponseDto } from './dto/response-project-delete.dto';
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('projects')
+@UseGuards(AuthGuard)
 export class ProjectsController {
   constructor(
     private readonly projectsService: ProjectsService,
@@ -47,7 +48,6 @@ export class ProjectsController {
     type: ProjectResponseDto,
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  @UseGuards(AuthGuard)
   @HttpCode(201)
   @Post('')
   async create(
@@ -82,7 +82,6 @@ export class ProjectsController {
     type: Project,
   })
   @ApiNotFoundResponse({ description: 'Project not found' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get(':id')
   async findById(@Req() request: Request): Promise<Project> {
@@ -111,7 +110,6 @@ export class ProjectsController {
   })
   @ApiNotFoundResponse({ description: 'Project not found' })
   @ApiBadRequestResponse({ description: 'Bad request' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Patch(':id')
   async update(
@@ -149,7 +147,6 @@ export class ProjectsController {
     type: ProjectDeleteResponseDto,
   })
   @ApiNotFoundResponse({ description: 'Project not found' })
-  @UseGuards(AuthGuard)
   @HttpCode(200)
   @Delete(':id')
   async delete(@Req() request: Request): Promise<ProjectDeleteResponseDto> {
