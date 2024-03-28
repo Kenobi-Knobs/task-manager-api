@@ -54,20 +54,15 @@ export class TaskController {
     @Body() createTaskDto: CreateTaskDto,
     @Req() request: Request,
   ): Promise<TaskResponseDto> {
-    try {
-      const newTask = await this.taskService.create(
-        createTaskDto.name,
-        createTaskDto.description,
-        request['user'].email,
-      );
-
-      return new TaskResponseDto(
-        'Task [' + newTask.name + '] created successfully',
-        newTask,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const newTask = await this.taskService.create(
+      createTaskDto.name,
+      createTaskDto.description,
+      request['user'].email,
+    );
+    return new TaskResponseDto(
+      'Task [' + newTask.name + '] created successfully',
+      newTask,
+    );
   }
 
   @ApiOperation({ summary: 'Get task by Id' })
@@ -85,12 +80,8 @@ export class TaskController {
   @HttpCode(200)
   @Get(':id')
   async findOne(@Param() params: TaskIdDto): Promise<Task> {
-    try {
-      const task = await this.taskService.findOne(params.id);
-      return task;
-    } catch (error) {
-      throw error;
-    }
+    const task = await this.taskService.findOne(params.id);
+    return task;
   }
 
   @ApiOperation({ summary: 'Update task by Id' })
@@ -113,19 +104,15 @@ export class TaskController {
     @Param() params: TaskIdDto,
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<TaskResponseDto> {
-    try {
-      const task = await this.taskService.update(
-        params.id,
-        updateTaskDto.name,
-        updateTaskDto.description,
-      );
-      return new TaskResponseDto(
-        'Task [' + task.name + '] updated successfully',
-        task,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const task = await this.taskService.update(
+      params.id,
+      updateTaskDto.name,
+      updateTaskDto.description,
+    );
+    return new TaskResponseDto(
+      'Task [' + task.name + '] updated successfully',
+      task,
+    );
   }
 
   @ApiOperation({ summary: 'Delete task by Id' })
@@ -143,15 +130,11 @@ export class TaskController {
   @HttpCode(200)
   @Delete(':id')
   async delete(@Param() params: TaskIdDto): Promise<TaskResponseDto> {
-    try {
-      const task = await this.taskService.delete(params.id);
-      return new TaskResponseDto(
-        'Task [' + task.name + '] deleted successfully',
-        task,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const task = await this.taskService.delete(params.id);
+    return new TaskResponseDto(
+      'Task [' + task.name + '] deleted successfully',
+      task,
+    );
   }
 
   @ApiOperation({ summary: 'Promote task by Id' })
@@ -174,18 +157,14 @@ export class TaskController {
     @Param() params: TaskIdDto,
     @Body() promoteTaskDto: PromoteTaskDto,
   ): Promise<TaskResponseDto> {
-    try {
-      const task = await this.taskService.promote(
-        params.id,
-        promoteTaskDto.status,
-      );
-      return new TaskResponseDto(
-        'Task [' + task.name + '] promoted to [' + promoteTaskDto.status + ']',
-        task,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const task = await this.taskService.promote(
+      params.id,
+      promoteTaskDto.status,
+    );
+    return new TaskResponseDto(
+      'Task [' + task.name + '] promoted to [' + promoteTaskDto.status + ']',
+      task,
+    );
   }
 
   @ApiOperation({ summary: 'Add task to project' })
@@ -212,18 +191,14 @@ export class TaskController {
   async addToProject(
     @Param() params: AddToProjectDto,
   ): Promise<TaskResponseDto> {
-    try {
-      const task = await this.taskService.addToProject(
-        params.id,
-        params.projectId,
-      );
-      return new TaskResponseDto(
-        'Task [' + params.id + '] added to project [' + params.projectId + ']',
-        task,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const task = await this.taskService.addToProject(
+      params.id,
+      params.projectId,
+    );
+    return new TaskResponseDto(
+      'Task [' + params.id + '] added to project [' + params.projectId + ']',
+      task,
+    );
   }
 
   @ApiOperation({ summary: 'Get task list with params' })
@@ -236,11 +211,7 @@ export class TaskController {
   @HttpCode(200)
   @Get()
   async findAll(@Query() getTasksDto: GetTasksDto): Promise<Task[]> {
-    try {
-      const tasks = await this.taskService.findAll(getTasksDto);
-      return tasks;
-    } catch (error) {
-      throw error;
-    }
+    const tasks = await this.taskService.findAll(getTasksDto);
+    return tasks;
   }
 }

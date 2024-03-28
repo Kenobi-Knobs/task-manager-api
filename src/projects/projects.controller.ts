@@ -55,19 +55,15 @@ export class ProjectsController {
     @Body() createProjectDto: CreateProjectDto,
     @Req() request: Request,
   ): Promise<ProjectResponseDto> {
-    try {
-      const newProject = await this.projectsService.create(
-        createProjectDto.name,
-        createProjectDto.description,
-        request['user'].email,
-      );
-      return new ProjectResponseDto(
-        'Project [' + newProject.name + '] created successfully',
-        newProject,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const newProject = await this.projectsService.create(
+      createProjectDto.name,
+      createProjectDto.description,
+      request['user'].email,
+    );
+    return new ProjectResponseDto(
+      'Project [' + newProject.name + '] created successfully',
+      newProject,
+    );
   }
 
   @ApiOperation({ summary: 'Get project by id' })
@@ -86,12 +82,8 @@ export class ProjectsController {
   @HttpCode(200)
   @Get(':id')
   async findById(@Param() params: ProjectIdDto): Promise<Project> {
-    try {
-      const project = await this.projectsService.findById(params.id);
-      return project;
-    } catch (error) {
-      throw error;
-    }
+    const project = await this.projectsService.findById(params.id);
+    return project;
   }
 
   @ApiOperation({ summary: 'Update project by id' })
@@ -114,19 +106,15 @@ export class ProjectsController {
     @Body() updateProjectDto: UpdateProjectDto,
     @Param() params: ProjectIdDto,
   ): Promise<ProjectResponseDto> {
-    try {
-      const updatedProject = await this.projectsService.update(
-        params.id,
-        updateProjectDto.name,
-        updateProjectDto.description,
-      );
-      return new ProjectResponseDto(
-        'Project [' + updatedProject.name + '] updated successfully',
-        updatedProject,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const updatedProject = await this.projectsService.update(
+      params.id,
+      updateProjectDto.name,
+      updateProjectDto.description,
+    );
+    return new ProjectResponseDto(
+      'Project [' + updatedProject.name + '] updated successfully',
+      updatedProject,
+    );
   }
 
   @ApiOperation({ summary: 'Delete project by id' })
@@ -147,18 +135,14 @@ export class ProjectsController {
   async delete(
     @Param() params: ProjectIdDto,
   ): Promise<ProjectDeleteResponseDto> {
-    try {
-      const tasksUpdated = await this.taskService.removeProjectFromAllTask(
-        params.id,
-      );
-      const deletedProject = await this.projectsService.delete(params.id);
-      return new ProjectDeleteResponseDto(
-        'Project [' + deletedProject.name + '] deleted successfully',
-        deletedProject,
-        tasksUpdated,
-      );
-    } catch (error) {
-      throw error;
-    }
+    const tasksUpdated = await this.taskService.removeProjectFromAllTask(
+      params.id,
+    );
+    const deletedProject = await this.projectsService.delete(params.id);
+    return new ProjectDeleteResponseDto(
+      'Project [' + deletedProject.name + '] deleted successfully',
+      deletedProject,
+      tasksUpdated,
+    );
   }
 }
