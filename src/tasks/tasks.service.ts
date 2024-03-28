@@ -5,19 +5,21 @@ import { Task, TaskDocument } from './model/task.schema';
 import { GetTasksDto } from './dto/get-tasks.dto';
 import { FilterQuery } from 'mongoose';
 import { TaskStatus } from './dto/enums/task-status.enum';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { PromoteTaskDto } from './dto/promote-task.dto';
+import { TaskIdDto } from './dto/task-id.dto';
+import { AddToProjectDto } from './dto/add-to-project.dto';
+import { ProjectIdDto } from 'src/projects/dto/project-id.dto';
 
 @Injectable()
 export class TaskService {
   constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
 
-  async create(
-    name: string,
-    description: string,
-    author: string,
-  ): Promise<Task> {
+  async create(createTaskDto: CreateTaskDto, author: string): Promise<Task> {
     const newTask = new this.taskModel({
-      name: name,
-      description: description,
+      name: createTaskDto.name,
+      description: createTaskDto.description,
       author: author,
       status: TaskStatus.New,
       projectId: null,
@@ -25,44 +27,58 @@ export class TaskService {
     return newTask.save();
   }
 
-  async findOne(id: string): Promise<Task> {
+  async findOne(taskIdDto: TaskIdDto): Promise<Task> {
     return this.taskModel
-      .findById(id)
+      .findById(taskIdDto)
       .orFail(new NotFoundException('Task not found'));
   }
 
-  async update(id: string, name: string, description: string): Promise<Task> {
+  async update(
+    taskIdDto: TaskIdDto,
+    updateTaskDto: UpdateTaskDto,
+  ): Promise<Task> {
     return this.taskModel
       .findByIdAndUpdate(
-        id,
-        { name: name, description: description },
+        taskIdDto.id,
+        { name: updateTaskDto.name, description: updateTaskDto.description },
         { new: true },
       )
       .orFail(new NotFoundException('Task not found'));
   }
 
-  async delete(id: string): Promise<Task> {
+  async delete(taskIdDto: TaskIdDto): Promise<Task> {
     return this.taskModel
-      .findByIdAndDelete(id)
+      .findByIdAndDelete(taskIdDto.id)
       .orFail(new NotFoundException('Task not found'));
   }
 
-  async promote(id: string, status: TaskStatus): Promise<Task> {
+  async promote(
+    taskIdDto: TaskIdDto,
+    promoteTaskDto: PromoteTaskDto,
+  ): Promise<Task> {
     return this.taskModel
-      .findByIdAndUpdate(id, { status: status }, { new: true })
+      .findByIdAndUpdate(
+        taskIdDto.id,
+        { status: promoteTaskDto.status },
+        { new: true },
+      )
       .orFail(new NotFoundException('Task not found'));
   }
 
-  async addToProject(id: string, projectId: string): Promise<Task> {
+  async addToProject(addToProjectDto: AddToProjectDto): Promise<Task> {
     return this.taskModel
-      .findByIdAndUpdate(id, { projectId: projectId }, { new: true })
+      .findByIdAndUpdate(
+        addToProjectDto.id,
+        { projectId: addToProjectDto.projectId },
+        { new: true },
+      )
       .orFail(new NotFoundException('Task or Project not found'));
   }
 
-  async removeProjectFromAllTask(projectId: string): Promise<number> {
+  async removeProjectFromAllTask(projectIdDto: ProjectIdDto): Promise<number> {
     const result = await this.taskModel.updateMany(
       {
-        projectId: projectId,
+        projectId: projectIdDto.id,
       },
       { projectId: null },
     );

@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project, ProjectDocument } from './model/project.schema';
 import { CreateProjectDto } from './dto/create-project.dto';
+import { ProjectIdDto } from './dto/project-id.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -22,19 +23,19 @@ export class ProjectsService {
     return newProject.save();
   }
 
-  async findById(id: string): Promise<Project> {
+  async findById(projectIdDto: ProjectIdDto): Promise<Project> {
     return this.projectModel
-      .findById(id)
+      .findById(projectIdDto.id)
       .orFail(new NotFoundException(`Project not found`));
   }
 
   async update(
-    id: string,
+    projectIdDto: ProjectIdDto,
     updateProjectDto: CreateProjectDto,
   ): Promise<Project> {
     return this.projectModel
       .findByIdAndUpdate(
-        id,
+        projectIdDto.id,
         {
           name: updateProjectDto.name,
           description: updateProjectDto.description,
@@ -44,9 +45,9 @@ export class ProjectsService {
       .orFail(new NotFoundException(`Project not found`));
   }
 
-  async delete(id: string): Promise<Project> {
+  async delete(projectIdDto: ProjectIdDto): Promise<Project> {
     return this.projectModel
-      .findByIdAndDelete(id)
+      .findByIdAndDelete(projectIdDto.id)
       .orFail(new NotFoundException(`Project not found`));
   }
 }

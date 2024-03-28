@@ -55,8 +55,7 @@ export class TaskController {
     @Req() request: Request,
   ): Promise<TaskResponseDto> {
     const newTask = await this.taskService.create(
-      createTaskDto.name,
-      createTaskDto.description,
+      createTaskDto,
       request['user'].email,
     );
     return new TaskResponseDto(
@@ -80,7 +79,7 @@ export class TaskController {
   @HttpCode(200)
   @Get(':id')
   async findOne(@Param() params: TaskIdDto): Promise<Task> {
-    const task = await this.taskService.findOne(params.id);
+    const task = await this.taskService.findOne(params);
     return task;
   }
 
@@ -104,11 +103,7 @@ export class TaskController {
     @Param() params: TaskIdDto,
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<TaskResponseDto> {
-    const task = await this.taskService.update(
-      params.id,
-      updateTaskDto.name,
-      updateTaskDto.description,
-    );
+    const task = await this.taskService.update(params, updateTaskDto);
     return new TaskResponseDto(
       'Task [' + task.name + '] updated successfully',
       task,
@@ -130,7 +125,7 @@ export class TaskController {
   @HttpCode(200)
   @Delete(':id')
   async delete(@Param() params: TaskIdDto): Promise<TaskResponseDto> {
-    const task = await this.taskService.delete(params.id);
+    const task = await this.taskService.delete(params);
     return new TaskResponseDto(
       'Task [' + task.name + '] deleted successfully',
       task,
@@ -157,10 +152,7 @@ export class TaskController {
     @Param() params: TaskIdDto,
     @Body() promoteTaskDto: PromoteTaskDto,
   ): Promise<TaskResponseDto> {
-    const task = await this.taskService.promote(
-      params.id,
-      promoteTaskDto.status,
-    );
+    const task = await this.taskService.promote(params, promoteTaskDto);
     return new TaskResponseDto(
       'Task [' + task.name + '] promoted to [' + promoteTaskDto.status + ']',
       task,
@@ -191,10 +183,7 @@ export class TaskController {
   async addToProject(
     @Param() params: AddToProjectDto,
   ): Promise<TaskResponseDto> {
-    const task = await this.taskService.addToProject(
-      params.id,
-      params.projectId,
-    );
+    const task = await this.taskService.addToProject(params);
     return new TaskResponseDto(
       'Task [' + params.id + '] added to project [' + params.projectId + ']',
       task,
