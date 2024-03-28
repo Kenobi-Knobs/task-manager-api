@@ -5,13 +5,14 @@ import {
   HttpCode,
   UsePipes,
   ValidationPipe,
-  Request,
   UseGuards,
   Get,
   Patch,
   Delete,
   NotFoundException,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -54,14 +55,13 @@ export class ProjectsController {
   @Post('')
   async create(
     @Body() createProjectDto: CreateProjectDto,
-    @Request() req,
+    @Req() request: Request,
   ): Promise<ProjectResponseDto> {
     try {
-      const userEmail = req.user.email;
       const newProject = await this.projectsService.create(
         createProjectDto.name,
         createProjectDto.description,
-        userEmail,
+        request['user'].email,
       );
       return new ProjectResponseDto(
         'Project [' + newProject.name + '] created successfully',
@@ -88,9 +88,9 @@ export class ProjectsController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get(':id')
-  async findById(@Request() req): Promise<Project> {
+  async findById(@Req() request: Request): Promise<Project> {
     try {
-      const project = await this.projectsService.findById(req.params.id);
+      const project = await this.projectsService.findById(request.params.id);
       if (!project) {
         throw new NotFoundException();
       }
@@ -120,11 +120,11 @@ export class ProjectsController {
   @Patch(':id')
   async update(
     @Body() updateProjectDto: UpdateProjectDto,
-    @Request() req,
+    @Req() request: Request,
   ): Promise<ProjectResponseDto> {
     try {
       const updatedProject = await this.projectsService.update(
-        req.params.id,
+        request.params.id,
         updateProjectDto.name,
         updateProjectDto.description,
       );
@@ -156,12 +156,14 @@ export class ProjectsController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Delete(':id')
-  async delete(@Request() req): Promise<ProjectDeleteResponseDto> {
+  async delete(@Req() request: Request): Promise<ProjectDeleteResponseDto> {
     try {
       const tasksUpdated = await this.taskService.removeProjectFromAllTask(
-        req.params.id,
+        request.params.id,
       );
-      const deletedProject = await this.projectsService.delete(req.params.id);
+      const deletedProject = await this.projectsService.delete(
+        request.params.id,
+      );
       if (!deletedProject) {
         throw new NotFoundException();
       }

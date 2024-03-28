@@ -5,7 +5,7 @@ import {
   HttpCode,
   UsePipes,
   ValidationPipe,
-  Request,
+  Req,
   UseGuards,
   Get,
   Patch,
@@ -13,6 +13,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { TaskService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -52,14 +53,13 @@ export class TaskController {
   @Post('')
   async create(
     @Body() createTaskDto: CreateTaskDto,
-    @Request() req,
+    @Req() request: Request,
   ): Promise<TaskResponseDto> {
     try {
-      const userEmail = req.user.email;
       const newTask = await this.taskService.create(
         createTaskDto.name,
         createTaskDto.description,
-        userEmail,
+        request['user'].email,
       );
 
       return new TaskResponseDto(
@@ -86,9 +86,9 @@ export class TaskController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get(':id')
-  async findOne(@Request() req): Promise<Task> {
+  async findOne(@Req() request: Request): Promise<Task> {
     try {
-      const task = await this.taskService.findOne(req.params.id);
+      const task = await this.taskService.findOne(request.params.id);
       if (!task) {
         throw new NotFoundException();
       }
@@ -117,12 +117,12 @@ export class TaskController {
   @HttpCode(200)
   @Patch(':id')
   async update(
-    @Request() req,
+    @Req() request: Request,
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.update(
-        req.params.id,
+        request.params.id,
         updateTaskDto.name,
         updateTaskDto.description,
       );
@@ -153,9 +153,9 @@ export class TaskController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Delete(':id')
-  async delete(@Request() req): Promise<TaskResponseDto> {
+  async delete(@Req() request: Request): Promise<TaskResponseDto> {
     try {
-      const task = await this.taskService.delete(req.params.id);
+      const task = await this.taskService.delete(request.params.id);
       if (!task) {
         throw new NotFoundException();
       }
@@ -187,12 +187,12 @@ export class TaskController {
   @HttpCode(200)
   @Patch(':id/promote')
   async promote(
-    @Request() req,
+    @Req() request: Request,
     @Body() promoteTaskDto: PromoteTaskDto,
   ): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.promote(
-        req.params.id,
+        request.params.id,
         promoteTaskDto.status,
       );
       if (!task) {
@@ -229,20 +229,20 @@ export class TaskController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Patch(':id/add-to-project/:projectId')
-  async addToProject(@Request() req): Promise<TaskResponseDto> {
+  async addToProject(@Req() request: Request): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.addToProject(
-        req.params.id,
-        req.params.projectId,
+        request.params.id,
+        request.params.projectId,
       );
       if (!task) {
         throw new NotFoundException();
       }
       return new TaskResponseDto(
         'Task [' +
-          req.params.id +
+          request.params.id +
           '] added to project [' +
-          req.params.projectId +
+          request.params.projectId +
           ']',
         task,
       );
