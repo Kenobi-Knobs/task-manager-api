@@ -32,7 +32,7 @@ export class UserController {
   @ApiConflictResponse({ description: 'Email already exists' })
   @UsePipes(ValidationPipe)
   @HttpCode(201)
-  @Post('create')
+  @Post('')
   async create(
     @Body() createUserDto: CreateUserDto,
   ): Promise<CreateUserResponseDto> {

@@ -51,7 +51,7 @@ export class ProjectsController {
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @HttpCode(201)
-  @Post('create')
+  @Post('')
   async create(
     @Body() createProjectDto: CreateProjectDto,
     @Request() req,

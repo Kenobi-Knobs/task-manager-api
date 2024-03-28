@@ -49,7 +49,7 @@ export class TaskController {
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @HttpCode(201)
-  @Post('create')
+  @Post('')
   async create(
     @Body() createTaskDto: CreateTaskDto,
     @Request() req,
