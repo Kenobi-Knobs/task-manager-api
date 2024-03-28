@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Task, TaskDocument } from './model/task.schema';
@@ -26,44 +26,48 @@ export class TaskService {
   }
 
   async findOne(id: string): Promise<Task> {
-    return this.taskModel.findById(id).exec();
+    return this.taskModel
+      .findById(id)
+      .orFail(new NotFoundException('Task not found'));
   }
 
   async update(id: string, name: string, description: string): Promise<Task> {
-    return this.taskModel.findByIdAndUpdate(
-      id,
-      { name: name, description: description },
-      { new: true },
-    );
+    return this.taskModel
+      .findByIdAndUpdate(
+        id,
+        { name: name, description: description },
+        { new: true },
+      )
+      .orFail(new NotFoundException('Task not found'));
   }
 
   async delete(id: string): Promise<Task> {
-    return this.taskModel.findByIdAndDelete(id);
+    return this.taskModel
+      .findByIdAndDelete(id)
+      .orFail(new NotFoundException('Task not found'));
   }
 
   async promote(id: string, status: TaskStatus): Promise<Task> {
-    return this.taskModel.findByIdAndUpdate(
-      id,
-      { status: status },
-      { new: true },
-    );
+    return this.taskModel
+      .findByIdAndUpdate(id, { status: status }, { new: true })
+      .orFail(new NotFoundException('Task not found'));
   }
 
   async addToProject(id: string, projectId: string): Promise<Task> {
-    return this.taskModel.findByIdAndUpdate(
-      id,
-      { projectId: projectId },
-      { new: true },
-    );
+    return this.taskModel
+      .findByIdAndUpdate(id, { projectId: projectId }, { new: true })
+      .orFail(new NotFoundException('Task or Project not found'));
   }
 
   async removeProjectFromAllTask(projectId: string): Promise<number> {
-    const result = await this.taskModel.updateMany(
-      {
-        projectId: projectId,
-      },
-      { projectId: null },
-    );
+    const result = await this.taskModel
+      .updateMany(
+        {
+          projectId: projectId,
+        },
+        { projectId: null },
+      )
+      .orFail(new NotFoundException('Project not found'));
 
     return result.modifiedCount;
   }

@@ -7,7 +7,6 @@ import {
   Get,
   Patch,
   Delete,
-  NotFoundException,
   Req,
   Param,
 } from '@nestjs/common';
@@ -89,9 +88,6 @@ export class ProjectsController {
   async findById(@Param() params: ProjectIdDto): Promise<Project> {
     try {
       const project = await this.projectsService.findById(params.id);
-      if (!project) {
-        throw new NotFoundException();
-      }
       return project;
     } catch (error) {
       throw error;
@@ -124,9 +120,6 @@ export class ProjectsController {
         updateProjectDto.name,
         updateProjectDto.description,
       );
-      if (!updatedProject) {
-        throw new NotFoundException();
-      }
       return new ProjectResponseDto(
         'Project [' + updatedProject.name + '] updated successfully',
         updatedProject,
@@ -159,9 +152,6 @@ export class ProjectsController {
         params.id,
       );
       const deletedProject = await this.projectsService.delete(params.id);
-      if (!deletedProject) {
-        throw new NotFoundException();
-      }
       return new ProjectDeleteResponseDto(
         'Project [' + deletedProject.name + '] deleted successfully',
         deletedProject,

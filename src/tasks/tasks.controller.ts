@@ -7,7 +7,6 @@ import {
   UseGuards,
   Get,
   Patch,
-  NotFoundException,
   Delete,
   Query,
   Param,
@@ -88,9 +87,6 @@ export class TaskController {
   async findOne(@Param() params: TaskIdDto): Promise<Task> {
     try {
       const task = await this.taskService.findOne(params.id);
-      if (!task) {
-        throw new NotFoundException();
-      }
       return task;
     } catch (error) {
       throw error;
@@ -123,9 +119,6 @@ export class TaskController {
         updateTaskDto.name,
         updateTaskDto.description,
       );
-      if (!task) {
-        throw new NotFoundException();
-      }
       return new TaskResponseDto(
         'Task [' + task.name + '] updated successfully',
         task,
@@ -152,9 +145,6 @@ export class TaskController {
   async delete(@Param() params: TaskIdDto): Promise<TaskResponseDto> {
     try {
       const task = await this.taskService.delete(params.id);
-      if (!task) {
-        throw new NotFoundException();
-      }
       return new TaskResponseDto(
         'Task [' + task.name + '] deleted successfully',
         task,
@@ -189,9 +179,6 @@ export class TaskController {
         params.id,
         promoteTaskDto.status,
       );
-      if (!task) {
-        throw new NotFoundException();
-      }
       return new TaskResponseDto(
         'Task [' + task.name + '] promoted to [' + promoteTaskDto.status + ']',
         task,
@@ -230,9 +217,6 @@ export class TaskController {
         params.id,
         params.projectId,
       );
-      if (!task) {
-        throw new NotFoundException();
-      }
       return new TaskResponseDto(
         'Task [' + params.id + '] added to project [' + params.projectId + ']',
         task,
