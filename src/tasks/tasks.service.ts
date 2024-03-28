@@ -19,7 +19,6 @@ export class TaskService {
       description: description,
       author: author,
       status: 'New',
-      createdAt: new Date(),
       projectId: null,
     });
     return newTask.save();

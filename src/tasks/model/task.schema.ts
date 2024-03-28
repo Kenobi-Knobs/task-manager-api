@@ -5,7 +5,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type TaskDocument = HydratedDocument<Task>;
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 export class Task {
   @ApiProperty({
     example: '660451b642509b83c6a0f695',
@@ -56,15 +56,6 @@ export class Task {
   })
   @Prop()
   status: string;
-
-  @ApiProperty({
-    example: '2021-09-01T00:00:00.000Z',
-    description: 'The date and time the task was created',
-    type: Date,
-    required: true,
-  })
-  @Prop()
-  createdAt: Date;
 
   @ApiProperty({
     example: '660451b642509b83c6a0f695',

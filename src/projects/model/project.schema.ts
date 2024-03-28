@@ -5,7 +5,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type ProjectDocument = HydratedDocument<Project>;
 
-@Schema({ versionKey: false })
+@Schema({ versionKey: false, timestamps: true })
 export class Project {
   @ApiProperty({
     example: '660451b642509b83c6a0f695',
@@ -44,15 +44,6 @@ export class Project {
   })
   @Prop()
   author: string;
-
-  @ApiProperty({
-    example: '2021-01-01T00:00:00.000Z',
-    description: 'The date when the project was created',
-    type: Date,
-    required: true,
-  })
-  @Prop()
-  createdAt: Date;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

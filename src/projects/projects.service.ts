@@ -18,7 +18,6 @@ export class ProjectsService {
       name: name,
       description: description,
       author: author,
-      createdAt: new Date(),
     });
     return newProject.save();
   }
