@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Task, TaskDocument } from './model/task.schema';
 import { GetTasksDto } from './dto/get-tasks.dto';
+import { FilterQuery } from 'mongoose';
 
 @Injectable()
 export class TaskService {
@@ -89,19 +90,11 @@ export class TaskService {
   }
 
   async findAll(filter: GetTasksDto): Promise<Task[]> {
-    const findFilter: any = {};
-    if (filter.author) {
-      findFilter.author = filter.author;
-    }
-    if (filter.status) {
-      findFilter.status = filter.status;
-    }
-    if (filter.projectId) {
-      findFilter.projectId = filter.projectId;
-    }
-    if (filter.createdAt) {
-      findFilter.createdAt = filter.createdAt;
-    }
+    const findFilter: FilterQuery<TaskDocument> = {};
+    if (filter.author) findFilter.author = filter.author;
+    if (filter.status) findFilter.status = filter.status;
+    if (filter.projectId) findFilter.projectId = filter.projectId;
+    if (filter.createdAt) findFilter.createdAt = filter.createdAt;
 
     const sort: any = {};
     if (filter.sortBy) {
