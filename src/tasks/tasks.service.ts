@@ -29,7 +29,7 @@ export class TaskService {
 
   async findOne(taskIdDto: TaskIdDto): Promise<Task> {
     return this.taskModel
-      .findById(taskIdDto)
+      .findById(taskIdDto.id)
       .orFail(new NotFoundException('Task not found'));
   }
 
