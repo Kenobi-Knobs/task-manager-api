@@ -46,7 +46,6 @@ export class UserController {
       if (error.code === 11000) {
         throw new ConflictException('Email already exists');
       }
-      throw error;
     }
   }
 }

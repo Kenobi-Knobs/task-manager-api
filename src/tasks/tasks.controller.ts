@@ -11,8 +11,7 @@ import {
   Query,
   Param,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { TaskService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -52,7 +51,7 @@ export class TaskController {
   @Post('')
   async create(
     @Body() createTaskDto: CreateTaskDto,
-    @Req() request: Request,
+    @Req() request,
   ): Promise<TaskResponseDto> {
     const newTask = await this.taskService.create(
       createTaskDto,
