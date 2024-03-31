@@ -10,13 +10,12 @@ import {
   Req,
   Param,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './model/project.schema';
 import { AuthGuard } from '../auth/auth.guard';
-import { TaskService } from 'src/tasks/tasks.service';
+import { TaskService } from '../tasks/tasks.service';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -53,7 +52,7 @@ export class ProjectsController {
   @Post('')
   async create(
     @Body() createProjectDto: CreateProjectDto,
-    @Req() request: Request,
+    @Req() request,
   ): Promise<ProjectResponseDto> {
     const newProject = await this.projectsService.create(
       createProjectDto,
